@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+build/
+dist/
+*.db
+*.db-*
+examples/vault/
+examples/restored/
+examples/*redacted*.json
+examples/*.jsonl
+examples/run.json
+examples/plan.json
+.env
