@@ -1,6 +1,6 @@
 """Transactional SQLite migrations, checksum drift detection and dry runs."""
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
 def entrypoint():

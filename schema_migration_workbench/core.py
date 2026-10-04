@@ -153,3 +153,34 @@ def status(database):
         return {"applied": history(connection)}
     finally:
         connection.close()
+
+
+def backup(database, target):
+    import os, tempfile
+
+    source = Path(database).resolve()
+    target = Path(target).absolute()
+    if not source.is_file():
+        raise ValueError("Source database does not exist")
+    if source == target.resolve() or target.exists():
+        raise ValueError("Backup target must be new and separate from source")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=target.parent, delete=False) as stream:
+        temporary = Path(stream.name)
+    origin = destination = None
+    try:
+        origin = sqlite3.connect(source.as_uri() + "?mode=ro", uri=True)
+        destination = sqlite3.connect(temporary)
+        origin.backup(destination)
+        destination.close()
+        destination = None
+        origin.close()
+        origin = None
+        os.link(temporary, target)
+        return {"backup": str(target), "bytes": target.stat().st_size}
+    finally:
+        if origin:
+            origin.close()
+        if destination:
+            destination.close()
+        temporary.unlink(missing_ok=True)

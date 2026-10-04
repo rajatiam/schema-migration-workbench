@@ -36,3 +36,13 @@ Business algorithms live in `schema_migration_workbench/core.py`; `schema_migrat
 Migration files must be immutable once applied. Each numbered SQL file runs in a transaction. Explicit transaction statements, VACUUM and ATTACH are rejected. This is SQLite tooling, not a cross-database migration framework.
 
 This project demonstrates implemented engineering practices. It does not claim production deployment history or external certifications.
+
+## Consistent pre-migration backups
+
+Create a SQLite backup before schema changes. The SQLite backup API captures committed state, and the command refuses to overwrite an existing backup.
+
+```sh
+python -m schema_migration_workbench backup examples/app.db examples/before-migration.db
+```
+
+Create the named input snapshots, databases or plan files first using the existing commands above.
